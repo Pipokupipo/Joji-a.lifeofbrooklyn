@@ -597,7 +597,14 @@
                     {/* Logo - Pointer events allowed for click */}
                     <div 
                         className="flex items-center gap-3 cursor-pointer pointer-events-auto group"
-                        onClick={() => {setCurrentView('home'); setIsMenuOpen(false);}}
+                        onClick={() => {
+                            if (currentView === 'home') {
+                                window.scrollTo({ top: 0, behavior: 'smooth' });
+                            } else {
+                                setCurrentView('home');
+                            }
+                            setIsMenuOpen(false);
+                        }}
                     >
                         <div className="w-1.5 h-12 bg-red-600 group-hover:h-16 transition-all duration-300"></div>
                         <div className="flex flex-col">
@@ -708,7 +715,7 @@
                                     <Youtube size={18} /> <span className="hidden sm:inline">Watch on YouTube</span>
                                 </a>
                              </div>
-                             {!selectedSongData.isPending && <p className="text-xs text-gray-600 font-mono hidden sm:block">TRANSLATED BY NECTAR TEAM</p>}
+                             {!selectedSongData.isPending && <p className="text-xs text-gray-600 font-mono hidden sm:block">TRANSLATED BY BROOKLYN</p>}
                         </div>
                     </div>
                     </div>
@@ -734,7 +741,7 @@
                             </h1>
                             <p className="text-gray-400 text-lg md:text-xl max-w-md mx-auto md:mx-0 leading-relaxed animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-200">
                             ค้นพบเพลง Joji ที่ตรงกับความรู้สึกของคุณที่สุด <br/>
-                            พร้อมคำแปลไทยและความหมายที่จะทำให้คุณอินยิ่งกว่าเดิม
+                            พร้อมคำแปลไทยและความหมายที่จะทำให้คุณอินยิ่งขึ้น
                             </p>
                             
                             {/* Random Lyric Generator */}
@@ -1018,7 +1025,7 @@
                     </div>
                     
                     <div className="mt-12 text-xs text-gray-800 font-medium">
-                        © 2024 a.lifeofbrooklyn FOR JOJI. All rights reserved.
+                        © 2024 a.lifeofbrooklyn FOR JOJI.
                     </div>
                     </div>
                 </section>
