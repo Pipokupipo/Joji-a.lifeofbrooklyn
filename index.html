@@ -1,0 +1,1034 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FOR JOJI - Discover Your Sound</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+Thai:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Custom Styles -->
+    <style>
+        body { 
+            font-family: 'Inter', 'Noto Sans Thai', sans-serif; 
+        }
+        .font-serif {
+            font-family: 'Times New Roman', serif;
+        }
+        
+        /* Custom Scrollbar */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Animation Utilities */
+        .animate-spin-slow {
+            animation: spin 12s linear infinite;
+        }
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+
+    <!-- Import Map: จัดการ Library React และ Lucide -->
+    <script type="importmap">
+        {
+            "imports": {
+                "react": "https://esm.sh/react@18.2.0",
+                "react-dom/client": "https://esm.sh/react-dom@18.2.0/client",
+                "lucide-react": "https://esm.sh/lucide-react@0.292.0"
+            }
+        }
+    </script>
+    
+    <!-- Babel Standalone: สำหรับแปลงโค้ด React JSX ใน Browser -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body class="bg-neutral-950 text-white selection:bg-red-900 selection:text-white">
+    <div id="root"></div>
+
+    <script type="text/babel" data-type="module">
+        import React, { useState, useEffect } from 'react';
+        import { createRoot } from 'react-dom/client';
+        import { Play, Globe, Music, Menu, X, Mic2, ChevronDown, ArrowRight, ArrowLeft, Disc, FileText, Search, Shuffle, ExternalLink, Youtube, Headphones, MessageCircle, Sparkles } from 'lucide-react';
+
+        const App = () => {
+            const [isMenuOpen, setIsMenuOpen] = useState(false);
+            const [expandedTrack, setExpandedTrack] = useState(1);
+            const [currentView, setCurrentView] = useState('home'); 
+            const [selectedSongData, setSelectedSongData] = useState(null); 
+            
+            // New State for Search & Filter
+            const [searchQuery, setSearchQuery] = useState("");
+            const [activeMood, setActiveMood] = useState("All");
+            const [randomLyric, setRandomLyric] = useState(null);
+
+            // Scroll to top when view changes
+            useEffect(() => {
+                window.scrollTo(0, 0);
+            }, [currentView]);
+
+            const tracks = [
+                {
+                    id: 1,
+                    title: "SLOW DANCING IN THE DARK",
+                    album: "BALLADS 1",
+                    year: "2018",
+                    mood: "Sad",
+                    original: "Give me a reason we should be complete\nYou should be with him, I can't compete\nYou looked at me like I was someone else, oh well\nCan't you see? I don't wanna slow dance\nIn the dark, dark",
+                    translation: "บอกเหตุผลสักข้อ ที่เราควรคู่กัน...\nเธอควรไปกับเขา ฉันรู้ดีว่าไม่อาจเทียบเคียง\nสายตาที่เธอมองมา เหมือนฉันเป็นคนอื่น... ก็ช่างปะไร\nเธอไม่เห็นหรือ? ฉันไม่อยากเต้นรำอย่างเชื่องช้า\nในความมืดมิด... ที่มองไม่เห็นทางอีกต่อไป"
+                },
+                {
+                    id: 2,
+                    title: "GLIMPSE OF US",
+                    album: "SMITHEREENS",
+                    year: "2022",
+                    mood: "Heartbreak",
+                    original: "Cause sometimes I look in her eyes\nAnd that's where I find a glimpse of us\nAnd I try to fall for her touch\nBut I'm thinking of the way it was",
+                    translation: "เพราะบางครั้ง ยามฉันมองลึกลงไปในตาคู่นั้นของเธอ\nฉันกลับเห็นเพียงภาพเลือนราง... ของสองเรา\nฉันพยายามจะหลงรักสัมผัสของเธอคนใหม่\nแต่ใจกลับเอาแต่คะนึงหา... เรื่องราวในวันวาน"
+                },
+                {
+                    id: 3,
+                    title: "SANCTUARY",
+                    album: "NECTAR",
+                    year: "2020",
+                    mood: "Dreamy",
+                    original: "Not anyone, you're the one\nMore than fun, you're the sanctuary\nCause what you want is what I want\nSincerity",
+                    translation: "ไม่ใช่ใครก็ได้... ต้องเป็นเธอเท่านั้น\nไม่ใช่แค่ความสนุกชั่วคราว แต่เธอคือ 'ที่พำนักพิง' ของหัวใจ\nเพราะสิ่งที่เราต่างโหยหา คือสิ่งเดียวกัน\nนั่นคือความจริงใจ..."
+                },
+                {
+                    id: 4,
+                    title: "DIE FOR YOU",
+                    album: "SMITHEREENS",
+                    year: "2022",
+                    mood: "Sad",
+                    original: "I heard that you're happy without me\nAnd I hope it's true\nIt kills me a little, that's okay\n'Cause I'd die for you",
+                    translation: "ได้ข่าวว่าเธอมีความสุขดี... ในวันที่ไม่มีฉัน\nฉันก็หวังให้มันเป็นเรื่องจริง\nแม้มันจะกรีดใจฉันทีละน้อย... ก็ไม่เป็นไร\nเพราะฉันยอมแลกทุกอย่าง... แม้ชีวิต เพื่อเธอ"
+                },
+                {
+                    id: 5,
+                    title: "RUN",
+                    album: "NECTAR",
+                    year: "2020",
+                    mood: "Angst",
+                    original: "I fell for your magic, I tasted your skin\nAnd though this is tragic, at least I found the end\nI witness your madness, you shed light on my sins\nAnd if we share in this sadness, then where have you been?",
+                    translation: "ฉันตกหลุมพรางเวทมนตร์ของเธอ... ได้ลิ้มรสสัมผัสจากผิวกาย\nแม้มันจะเป็นโศกนาฏกรรม... แต่อย่างน้อยฉันก็ได้พบจุดจบ\nฉันเป็นพยานในความบ้าคลั่งของเธอ... เธอสาดแสงส่องบาปในใจฉัน\nหากเราต่างแบ่งปันความเศร้านี้ร่วมกัน... แล้วที่ผ่านมา เธอไปอยู่ที่ไหน?"
+                },
+                {
+                    id: 6,
+                    title: "EW",
+                    album: "NECTAR",
+                    year: "2020",
+                    mood: "Heartbreak",
+                    original: "Teach me to love just to let me go\nI can't believe that I'm not enough\nNot enough\nAnd so long, no one will be here to save you\nAnd no one will be here to know",
+                    translation: "สอนให้ฉันรู้จักรัก... เพียงเพื่อจะปล่อยฉันทิ้งไป\nไม่อยากจะเชื่อเลยว่าฉันยังดีไม่พอ... ยังไม่พออีกหรือ\nลาก่อน... จะไม่มีใครคอยช่วยเธออีกแล้ว\nและจะไม่มีใครได้รับรู้เรื่องราวนี้อีกต่อไป"
+                },
+                {
+                    id: 7,
+                    title: "LIKE YOU DO",
+                    album: "NECTAR",
+                    year: "2020",
+                    mood: "Romantic",
+                    original: "Lost in the blue\nThey don't love you like I do\nThose chills that I knew\nThey were nothing without you\nAnd everyone else, they don't matter now\nYou're the one I can't lose",
+                    translation: "หลงทางอยู่ในความเศร้าหมองสีคราม\nพวกเขาไม่ได้รักเธอ... เหมือนที่ฉันรัก\nความหนาวเหน็บที่ฉันเคยรู้จัก... มันไร้ความหมายเมื่อไม่มีเธอ\nคนอื่นจะจะเป็นตายร้ายดียังไงก็ช่าง... \nเพราะเธอคือคนเดียวที่ฉันไม่อาจสูญเสียไป"
+                },
+                {
+                    id: 8,
+                    title: "WILL HE",
+                    album: "IN TONGUES",
+                    year: "2017",
+                    mood: "Lo-fi",
+                    original: "Will your tongue still remember the taste of my lips?\nWill your shadow remember the swing of my hips?\nWill your lover caress you the way that I did?\nWill you notice my charm if he slips up one bit?",
+                    translation: "ลิ้นของเธอ... จะยังจดจำรสจูบของฉันได้ไหม?\nเงาของเธอ... จะยังจำจังหวะการเคลื่อนไหวของฉันได้หรือเปล่า?\nคนรักใหม่ของเธอ... จะทะนุถนอมเธอได้เหมือนที่ฉันทำไหม?\nเธอจะคิดถึงเสน่ห์ของฉันบ้างไหม... ถ้าเขาพลาดพลั้งแม้เพียงนิดเดียว"
+                },
+                {
+                    id: 9,
+                    title: "FEELING LIKE THE END",
+                    album: "SMITHEREENS",
+                    year: "2022",
+                    mood: "Chill",
+                    original: "Too quiet, too loud\nI'm thinking about it now\nToo quiet, too loud\nAnd who's gonna be around?",
+                    translation: "มันเงียบเกินไป... หรือดังเกินไป\nฉันกำลังคิดทบทวนดูอีกครั้ง\nในความสับสนนี้...\nสุดท้ายแล้ว จะมีใครอยู่ข้างๆ ฉันบ้างไหม?"
+                },
+                {
+                    id: 10,
+                    title: "BEFORE THE DAY IS OVER",
+                    album: "SMITHEREENS",
+                    year: "2022",
+                    mood: "Melancholy",
+                    original: "I was waiting for the day to end\nI was looking for a better friend\nAnd I was wondering if I could defend\nThe way we feel before the day is over",
+                    translation: "ฉันเฝ้ารอให้วันนี้ผ่านพ้นไป...\nตามหาใครสักคนที่เข้าใจ\nและได้แต่สงสัยว่าฉันจะปกป้องความรู้สึกของเราไว้ได้ไหม...\nก่อนที่วันนี้จะจบลง และเราต้องจากกัน"
+                },
+                {
+                    id: 11,
+                    title: "DISSOLVE",
+                    album: "SMITHEREENS",
+                    year: "2022",
+                    mood: "Vibe",
+                    original: "Who are we?\nWho are we?\nUsed to be, used to be\nThinking 'bout, thinking 'bout it",
+                    translation: "เราคือใครกันแน่?\nตัวตนของเรา...\nที่เคยเป็น ที่เคยมี\nฉันได้แต่เฝ้าคิดทบทวน... ในขณะที่ทุกอย่างกำลังเลือนหายไป"
+                },
+                {
+                    id: 12,
+                    title: "YUKON (INTERLUDE)",
+                    album: "SMITHEREENS",
+                    year: "2022",
+                    mood: "Chill",
+                    original: "And my eyes get low in that white Chevelle\nMake it out of here, I can't really tell\nGot my eyes so low in that white Chevelle",
+                    translation: "ดวงตาฉันเริ่มพร่ามัว... ในรถ Chevelle สีขาวคันนั้น\nจะหนีออกไปจากที่นี่ได้ไหม... ฉันเองก็ไม่รู้เหมือนกัน\nทำได้เพียงปล่อยใจให้ล่องลอยไป... ในความว่างเปล่า"
+                },
+                {
+                    id: 13,
+                    title: "NIGHT RIDER",
+                    album: "SMITHEREENS",
+                    year: "2022",
+                    mood: "Vibe",
+                    original: "I'm too precious, I'm too precious\nYou don't know what you're doin'\nI'm too precious, I'm too precious",
+                    translation: "ฉันมีค่าเกินกว่าจะมาเจอเรื่องแบบนี้...\nเธอไม่รู้หรอกว่าเธอกำลังทำอะไรลงไป\nตัวฉันมีค่าเกินไป... เกินกว่าที่เธอจะเข้าใจ"
+                },
+                {
+                    id: 14,
+                    title: "BLAHBLAHBLAH DEMO",
+                    album: "SMITHEREENS",
+                    year: "2022",
+                    mood: "Lo-fi",
+                    original: "I can make you feel it\nCloser to the edge\nI can make you feel it\nTell me what you said",
+                    translation: "ฉันจะทำให้เธอรู้สึกถึงมัน...\nความรู้สึกที่เหมือนยืนอยู่ปากเหว\nบอกมาสิว่าเธอพูดอะไร... ฉันจะทำให้เธออินไปกับมัน"
+                },
+                {
+                    id: 15,
+                    title: "1AM FREESTYLE",
+                    album: "SMITHEREENS",
+                    year: "2022",
+                    mood: "Sad",
+                    original: "And I'm tired of this madness\nTired of being stranded\nI don't wanna be alone",
+                    translation: "ฉันเหนื่อยกับความบ้าคลั่งนี้เหลือเกิน...\nเหนื่อยที่ต้องถูกทิ้งไว้กลางทางแบบนี้\nฉันไม่อยากต้องอยู่คนเดียวอีกต่อไปแล้ว"
+                },
+                {
+                    id: 16,
+                    title: "MODUS",
+                    album: "NECTAR",
+                    year: "2020",
+                    mood: "Pressure",
+                    original: "I need to live a thousand times\nJust to get the pressure off my mind\nI need to fit the mold",
+                    translation: "ฉันคงต้องใช้ชีวิตสักพันชาติ...\nเพียงเพื่อลบความกดดันนี้ออกไปจากใจ\nเพื่อให้ฉันเป็นได้ดั่งใจ... ในแบบพิมพ์ที่พวกเขาวาดหวัง"
+                },
+                {
+                    id: 17,
+                    title: "TICK TOCK",
+                    album: "NECTAR",
+                    year: "2020",
+                    mood: "Vibe",
+                    original: "As time keeps slipping away\nGirl, don't start feeling a way\nYou and I, we are one in the same",
+                    translation: "ในขณะที่เวลาค่อยๆ เลือนหายไป...\nที่รัก อย่าเพิ่งเปลี่ยนไปเลยนะ\nเธอกับฉัน... เราต่างก็เหมือนกัน"
+                },
+                {
+                    id: 18,
+                    title: "DAYLIGHT",
+                    album: "NECTAR",
+                    year: "2020",
+                    mood: "Groovy",
+                    original: "Wide awake, getting half past eight\nI'm creating a void\nI'm dealing with the thought of you and I",
+                    translation: "ตื่นเต็มตา... ตอนแปดโมงกว่า\nฉันกำลังสร้างความว่างเปล่าขึ้นมา\nเพื่อจัดการกับความคิด... เรื่องราวของเธอกับฉัน"
+                },
+                {
+                    id: 19,
+                    title: "UPGRADE",
+                    album: "NECTAR",
+                    year: "2020",
+                    mood: "Chill",
+                    original: "Guess I'm flying international\nWe can meet, but no more lies at the Oriental\nNow I'm so professional",
+                    translation: "สงสัยฉันต้องบินไปต่างประเทศซะแล้ว...\nเราเจอกันได้นะ แต่ขอร้องอย่าโกหกกันอีกเลย\nตอนนี้ฉันจัดการความรู้สึกเก่งขึ้นแล้วนะ"
+                },
+                {
+                    id: 20,
+                    title: "GIMME LOVE",
+                    album: "NECTAR",
+                    year: "2020",
+                    mood: "Desperate",
+                    original: "Gimme, gimme love\nGimme, gimme love\nGimme, gimme love\nWhen I'm gone",
+                    translation: "มอบความรักให้ฉันที...\nได้โปรดรักฉันหน่อยเถอะนะ\nรักฉันที...\nในวันที่ฉันจากไป"
+                },
+                {
+                    id: 21,
+                    title: "HIGH HOPES",
+                    album: "NECTAR",
+                    year: "2020",
+                    mood: "Chill",
+                    original: "High hopes, high hopes\nHigh hopes, high hopes\nA little mess up, do you feel it?",
+                    translation: "ความหวังอันสูงลิบ...\nความคาดหวังที่เสียดแทง\nพังทลายลงเล็กน้อย... เธอรู้สึกถึงมันบ้างไหม?"
+                },
+                {
+                    id: 22,
+                    title: "NITROUS",
+                    album: "NECTAR",
+                    year: "2020",
+                    mood: "Hype",
+                    original: "I can't feel my face\nBut only when I'm with you\nBut only when I'm with you",
+                    translation: "ฉันไม่รู้สึกถึงใบหน้าตัวเองเลย...\nก็เฉพาะตอนที่อยู่กับเธอเท่านั้นแหละ\nแค่ตอนที่มีเธออยู่ด้วย"
+                },
+                {
+                    id: 23,
+                    title: "PRETTY BOY",
+                    album: "NECTAR",
+                    year: "2020",
+                    mood: "Lo-fi",
+                    original: "I'm a pretty boy living on the west side\nLivin' so loud, you could never hear me cry",
+                    translation: "ฉันมันก็แค่หนุ่มหน้ามน... ใช้ชีวิตอยู่ฝั่งตะวันตก\nใช้ชีวิตสุดเหวี่ยง... จนเธอไม่มีวันได้ยินเสียงร้องไห้ของฉันหรอก"
+                },
+                {
+                    id: 24,
+                    title: "NORMAL PEOPLE",
+                    album: "NECTAR",
+                    year: "2020",
+                    mood: "Dark",
+                    original: "The devil came back\nHe told me that the poison is too good",
+                    translation: "ปีศาจตนนั้นกลับมาแล้ว...\nเขากระซิบกบอกฉันว่า ยาพิษนี่ยังหอมหวานเกินห้ามใจ"
+                },
+                {
+                    id: 25,
+                    title: "AFTERTHOUGHT",
+                    album: "NECTAR",
+                    year: "2020",
+                    mood: "Melancholy",
+                    original: "Lately, I've been slipping away from ya\nCan you tell me, does it hurt today?",
+                    translation: "ช่วงหลังมานี้... ฉันค่อยๆ ห่างหายไปจากเธอ\nบอกฉันหน่อยได้ไหม... วันนี้มันเจ็บปวดบ้างหรือเปล่า?"
+                },
+                {
+                    id: 26,
+                    title: "MR. HOLLYWOOD",
+                    album: "NECTAR",
+                    year: "2020",
+                    mood: "R&B",
+                    original: "Mr. Hollywood, won't you come back soon?\nShe said, Mr. Hollywood, won't you come back soon?",
+                    translation: "พ่อหนุ่มฮอลลีวูด... เมื่อไหร่จะกลับมาสักที?\nเธอย้ำถามฉัน... พ่อคนดัง เมื่อไหร่จะกลับมาหาฉัน?"
+                },
+                {
+                    id: 27,
+                    title: "777",
+                    album: "NECTAR",
+                    year: "2020",
+                    mood: "Electronic",
+                    original: "We were never the same, are you outta your mind?\nI don't like strings, no, no ties",
+                    translation: "เราไม่เหมือนเดิมอีกแล้ว... เธอเสียสติไปแล้วเหรอ?\nฉันไม่ชอบข้อผูกมัด... ไม่เอาหรอกความสัมพันธ์ที่ผูกกันไว้"
+                },
+                {
+                    id: 28,
+                    title: "REANIMATOR",
+                    album: "NECTAR",
+                    year: "2020",
+                    mood: "Experimental",
+                    original: "(Instrumental Focus)\nYou're not the one",
+                    translation: "(ดนตรีบรรเลง)\n...เธอไม่ใช่คนที่ใช่"
+                },
+                {
+                    id: 29,
+                    title: "YOUR MAN",
+                    album: "NECTAR",
+                    year: "2020",
+                    mood: "Upbeat",
+                    original: "Have you ever loved? Would you go again?\nDon't be down when it's over, baby, I'll be your man",
+                    translation: "เธอเคยรักใครไหม? แล้วจะกล้ารักอีกครั้งหรือเปล่า?\nอย่าเศร้าไปเลยเมื่อมันจบลง... ที่รัก ฉันจะเป็นคนคนนั้นของเธอเอง"
+                },
+                {
+                    id: 30,
+                    title: "ATTENTION",
+                    album: "BALLADS 1",
+                    year: "2018",
+                    mood: "Melancholy",
+                    original: "Girl, would it kill you just to throw a little bit of attention?\nIf I hurt you, I'm afraid God's gonna teach me a lesson",
+                    translation: "ที่รัก... มันจะตายไหมถ้าเธอจะหันมาสนใจฉันสักหน่อย?\nถ้าฉันทำให้เธอเจ็บ... ฉันกลัวว่าพระเจ้าจะลงโทษฉัน"
+                },
+                {
+                    id: 31,
+                    title: "TEST DRIVE",
+                    album: "BALLADS 1",
+                    year: "2018",
+                    mood: "Heartbreak",
+                    original: "I'm looking for a long ride\nShe just want a test drive",
+                    translation: "ฉันมองหาการเดินทางที่ยาวนาน... รักที่จริงจัง\nแต่เธอกลับแค่ต้องการลองขับเล่นๆ... ชั่วครั้งชั่วคราว"
+                },
+                {
+                    id: 32,
+                    title: "WANTED U",
+                    album: "BALLADS 1",
+                    year: "2018",
+                    mood: "Angst",
+                    original: "I've been waiting my whole life to know I wanted you\nAre you feeling me slowly? You can take your fucking time",
+                    translation: "ฉันรอมาทั้งชีวิต... เพื่อจะรู้ว่าฉันต้องการแค่เธอ\nเธอเริ่มรู้สึกถึงฉันบ้างหรือยัง? ใช้เวลาของเธอให้เต็มที่ไปเลย"
+                },
+                {
+                    id: 33,
+                    title: "CAN'T GET OVER YOU",
+                    album: "BALLADS 1",
+                    year: "2018",
+                    mood: "Cute",
+                    original: "I can't get over you\nCan't get over you\nAnd before I die, I pray that I could be the one",
+                    translation: "ฉันลืมเธอไม่ได้จริงๆ...\nตัดใจจากเธอไม่ลง\nและก่อนที่ฉันจะตาย... ฉันภาวนาขอให้ฉันได้เป็นคนคนนั้นของเธอ"
+                },
+                {
+                    id: 34,
+                    title: "YEAH RIGHT",
+                    album: "BALLADS 1",
+                    year: "2018",
+                    mood: "Party",
+                    original: "Yeah, you bet I know that she ain't never give a single fuck about me\nYeah, you bet she know that we ain't never gonna be together, I see",
+                    translation: "อืม ใช่เลย... ฉันรู้ดีว่าเธอไม่เคยแคร์ฉันเลยสักนิด\nอืม และเธอก็รู้ดีว่าเราไม่มีวันได้คบกัน... ฉันเข้าใจแล้ว"
+                },
+                {
+                    id: 35,
+                    title: "WHY AM I STILL IN LA",
+                    album: "BALLADS 1",
+                    year: "2018",
+                    mood: "Dark",
+                    original: "Why am I still in LA?\nI've been waiting for a change",
+                    translation: "ทำไมฉันยังติดอยู่ที่แอลเอ?\nฉันเฝ้ารอการเปลี่ยนแปลงมาตลอด... แต่ก็ไม่เคยเกิดขึ้น"
+                },
+                {
+                    id: 36,
+                    title: "NO FUN",
+                    album: "BALLADS 1",
+                    year: "2018",
+                    mood: "Vibe",
+                    original: "I drive my friends crazy\nI drive my friends crazy",
+                    translation: "ฉันทำให้เพื่อนๆ เป็นบ้า...\nฉันมันตัวน่ารำคาญที่ใครๆ ก็เอือมระอา"
+                },
+                {
+                    id: 37,
+                    title: "COME THRU",
+                    album: "BALLADS 1",
+                    year: "2018",
+                    mood: "Chill",
+                    original: "I want you to come through\nAnd I'll make it worth your while",
+                    translation: "อยากให้เธอมาหา...\nมาเจอกันหน่อยได้ไหม แล้วฉันจะทำให้มันคุ้มค่าเวลาของเธอ"
+                },
+                {
+                    id: 38,
+                    title: "R.I.P.",
+                    album: "BALLADS 1",
+                    year: "2018",
+                    mood: "Emo",
+                    original: "I would die for you\nI would lie for you",
+                    translation: "ฉันตายแทนเธอได้...\nฉันยอมโกหกเพื่อเธอได้... เพื่อปกป้องความรู้สึกนั้น"
+                },
+                {
+                    id: 39,
+                    title: "XNXX",
+                    album: "BALLADS 1",
+                    year: "2018",
+                    mood: "Vibe",
+                    original: "I don't really wanna run around\nI don't really wanna run around",
+                    translation: "ฉันไม่อยากวิ่งตามใครอีกแล้ว...\nเหนื่อยเหลือเกินกับการต้องไล่ตามความรัก"
+                },
+                {
+                    id: 40,
+                    title: "I'LL SEE YOU IN 40",
+                    album: "BALLADS 1",
+                    year: "2018",
+                    mood: "Sad",
+                    original: "I'll see you in 40\n(Instrumental Focus)",
+                    translation: "อีก 40 ปีเจอกันนะ...\n(ดนตรีบรรเลงแห่งความเศร้าสร้อย)"
+                },
+                {
+                    id: 41,
+                    title: "PILLS",
+                    album: "IN TONGUES",
+                    year: "2017",
+                    mood: "Druggy",
+                    original: "Please don't run away\nPlease don't run away",
+                    translation: "ได้โปรดอย่าหนีไปเลย...\nอย่าทิ้งฉันไป... ในวันที่ฉันต้องการเธอที่สุด"
+                },
+                {
+                    id: 42,
+                    title: "DEMONS",
+                    album: "IN TONGUES",
+                    year: "2017",
+                    mood: "Dark",
+                    original: "The demons told me everything\nThey whisper in the night",
+                    translation: "ปีศาจเหล่านั้นบอกฉันทุกอย่าง...\nเสียงกระซิบในยามค่ำคืน... ที่คอยหลอกหลอน"
+                },
+                {
+                    id: 43,
+                    title: "WINDOW",
+                    album: "IN TONGUES",
+                    year: "2017",
+                    mood: "Melancholy",
+                    original: "I see nothing out the window\nWindow",
+                    translation: "ฉันมองไม่เห็นอะไรเลยนอกหน้าต่างบานนั้น...\nว่างเปล่า... เหมือนใจของฉัน"
+                },
+                {
+                    id: 44,
+                    title: "BITTER FUCK",
+                    album: "IN TONGUES",
+                    year: "2017",
+                    mood: "Angry",
+                    original: "I find it hard to be myself when you are not around\nCause I'm a bitter fuck",
+                    translation: "มันยากเหลือเกินที่จะเป็นตัวเอง... ในเวลาที่ไม่มีเธอ\nเพราะฉันมันก็แค่ไอ้คนขี้แพ้... ที่เต็มไปด้วยความขมขื่น"
+                },
+                {
+                    id: 45,
+                    title: "WORLDSTAR MONEY (INTERLUDE)",
+                    album: "IN TONGUES",
+                    year: "2017",
+                    mood: "Lo-fi",
+                    original: "I looked at you and said, oh oh oh\nDon't hate me",
+                    translation: "ฉันมองเธอแล้วได้แต่ร้อง... โอ้...\nอย่าเกลียดกันเลยนะ"
+                },
+                {
+                    id: 46,
+                    title: "PLASTIC TASTE",
+                    album: "IN TONGUES",
+                    year: "2017",
+                    mood: "Sad",
+                    original: "I can't do this to your face\nI can't do this to your face",
+                    translation: "ฉันทนทำแบบนี้ต่อหน้าเธอไม่ได้...\nทนโกหกความรู้สึกตัวเองไม่ได้"
+                },
+                {
+                    id: 47,
+                    title: "I DON'T WANNA WASTE MY TIME",
+                    album: "IN TONGUES",
+                    year: "2017",
+                    mood: "Romantic",
+                    original: "I don't wanna waste my time if I can't be by your side\nYou really shouldn't think about God if she can't see where you hide",
+                    translation: "ฉันไม่อยากเสียเวลาเปล่า... ถ้าไม่ได้อยู่ข้างกายเธอ\nอย่ามัวแต่คิดถึงพระเจ้าเลย... ถ้าแม้แต่เธอยังมองไม่เห็นว่าฉันซ่อนตัวอยู่ที่ไหน"
+                }
+            ];
+
+            const fullDiscography = [
+                {
+                    album: "SMITHEREENS",
+                    year: "2022",
+                    coverColor: "bg-neutral-800",
+                    coverUrl: "https://m.media-amazon.com/images/I/71YM3UGDKJL._UF1000,1000_QL80_.jpg",
+                    songs: ["Glimpse of Us", "Feeling Like The End", "Die For You", "Before The Day Is Over", "Dissolve", "Night Rider", "BlahBlahBlah Demo", "Yukon (Interlude)", "1AM FREESTYLE"]
+                },
+                {
+                    album: "NECTAR",
+                    year: "2020",
+                    coverColor: "bg-red-900",
+                    coverUrl: "https://upload.wikimedia.org/wikipedia/en/1/1b/Joji_-_Nectar.png",
+                    songs: ["Ew", "Modus", "Tick Tock", "Daylight", "Upgrade", "Gimme Love", "Run", "Sanctuary", "High Hopes", "NITROUS", "Pretty Boy", "Normal People", "Afterthought", "Mr. Hollywood", "777", "Reanimator", "Like You Do", "Your Man"]
+                },
+                {
+                    album: "BALLADS 1",
+                    year: "2018",
+                    coverColor: "bg-neutral-700",
+                    coverUrl: "https://upload.wikimedia.org/wikipedia/en/6/6a/Joji_%E2%80%93_Ballads_1.png",
+                    songs: ["Attention", "Slow Dancing in the Dark", "Test Drive", "Wanted U", "Can't Get Over You", "Yeah Right", "Why Am I Still in LA", "No Fun", "Come Thru", "R.I.P.", "XNXX", "I'll See You in 40"]
+                },
+                {
+                    album: "IN TONGUES",
+                    year: "2017",
+                    coverColor: "bg-blue-900",
+                    coverUrl: "https://upload.wikimedia.org/wikipedia/en/9/95/In_Tongues_Joji.png",
+                    songs: ["Will He", "Pills", "Demons", "Window", "Bitter Fuck", "Worldstar Money (Interlude)", "Plastic Taste", "I Don't Wanna Waste My Time"]
+                }
+            ];
+
+            // Moods list for filter
+            const moods = ["All", "Sad", "Heartbreak", "Romantic", "Chill", "Dreamy", "Angst"];
+
+            // Filter logic
+            const filteredTracks = tracks.filter(track => {
+                const matchesMood = activeMood === "All" || track.mood === activeMood;
+                const matchesSearch = track.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                                      track.translation.includes(searchQuery);
+                return matchesMood && matchesSearch;
+            });
+
+            const toggleTrack = (id) => {
+                setExpandedTrack(expandedTrack === id ? null : id);
+            };
+
+            const openSongModal = (songTitle, albumTitle, year) => {
+                const foundTrack = tracks.find(t => t.title.toUpperCase() === songTitle.toUpperCase());
+                if (foundTrack) {
+                    setSelectedSongData(foundTrack);
+                } else {
+                    setSelectedSongData({
+                        title: songTitle,
+                        album: albumTitle,
+                        year: year,
+                        original: "Lyrics coming soon...",
+                        translation: "กำลังอยู่ในระหว่างการแปล...",
+                        isPending: true
+                    });
+                }
+            };
+
+            const generateRandomLyric = () => {
+                const randomTrack = tracks[Math.floor(Math.random() * tracks.length)];
+                const lines = randomTrack.translation.split('\n');
+                const randomLine = lines[Math.floor(Math.random() * lines.length)];
+                setRandomLyric({
+                    text: randomLine,
+                    song: randomTrack.title,
+                    album: randomTrack.album
+                });
+            };
+
+            return (
+                <div className="min-h-screen bg-neutral-950 text-white font-sans selection:bg-red-600 selection:text-white pb-20">
+                
+                {/* NEW NAVBAR: Minimalist Floating Style */}
+                <nav className="fixed top-0 left-0 w-full z-50 px-6 py-8 flex justify-between items-start pointer-events-none">
+                    {/* Logo - Pointer events allowed for click */}
+                    <div 
+                        className="flex items-center gap-3 cursor-pointer pointer-events-auto group"
+                        onClick={() => {setCurrentView('home'); setIsMenuOpen(false);}}
+                    >
+                        <div className="w-1.5 h-12 bg-red-600 group-hover:h-16 transition-all duration-300"></div>
+                        <div className="flex flex-col">
+                            <span className="text-xl font-bold tracking-tighter leading-none">FOR</span>
+                            <span className="text-xl font-bold tracking-tighter leading-none text-red-600">JOJI</span>
+                        </div>
+                    </div>
+
+                    {/* Menu Trigger - Pointer events allowed */}
+                    <button 
+                        onClick={() => setIsMenuOpen(!isMenuOpen)} 
+                        className="pointer-events-auto group flex items-center gap-3"
+                    >
+                        <span className="text-sm font-bold tracking-[0.2em] group-hover:text-red-600 transition-colors hidden md:block">
+                            {isMenuOpen ? "CLOSE" : "MENU"}
+                        </span>
+                        <div className="w-10 h-10 bg-white/5 backdrop-blur-md border border-white/10 rounded-full flex flex-col items-center justify-center gap-1.5 group-hover:bg-red-600 group-hover:border-red-600 transition-all duration-300">
+                            <span className={`w-5 h-0.5 bg-white transition-all duration-300 ${isMenuOpen ? 'rotate-45 translate-y-1' : ''}`}></span>
+                            <span className={`w-5 h-0.5 bg-white transition-all duration-300 ${isMenuOpen ? '-rotate-45 -translate-y-1' : ''}`}></span>
+                        </div>
+                    </button>
+
+                    {/* Full Screen Menu Overlay */}
+                    <div className={`fixed inset-0 bg-neutral-950/95 backdrop-blur-xl z-40 flex flex-col items-center justify-center transition-all duration-500 pointer-events-auto ${isMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible'}`}>
+                        <div className="flex flex-col items-center gap-8 md:gap-12">
+                            {['HOME', 'DISCOGRAPHY', 'COMMUNITY'].map((item, index) => (
+                                <button 
+                                    key={item}
+                                    onClick={() => {
+                                        if (item === 'COMMUNITY') {
+                                            setIsMenuOpen(false);
+                                            setTimeout(() => {
+                                                const el = document.getElementById('community');
+                                                if (el) el.scrollIntoView({ behavior: 'smooth' });
+                                            }, 100);
+                                        } else {
+                                            setCurrentView(item.toLowerCase()); 
+                                            setIsMenuOpen(false);
+                                        }
+                                    }} 
+                                    className={`text-5xl md:text-8xl font-bold tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white to-gray-500 hover:to-red-600 transition-all duration-500 transform hover:scale-105 ${isMenuOpen ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}
+                                    style={{transitionDelay: `${index * 100}ms`}}
+                                >
+                                    {item}
+                                </button>
+                            ))}
+                        </div>
+                        
+                        <div className={`mt-20 grid grid-cols-3 gap-12 text-xs font-mono tracking-widest text-gray-500 transition-all duration-700 delay-300 ${isMenuOpen ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+                            <a href="https://www.instagram.com/a.lifeofbrooklyn/" className="hover:text-white transition-colors text-center">INSTAGRAM</a>
+                            <a href="https://www.tiktok.com/@sonatargoingtofar?is_from_webapp=1&sender_device=pc" className="hover:text-white transition-colors text-center">TIKTOK</a>
+                            <a href="https://open.spotify.com/user/31exjoqodynad2wo6jiutvh5mg34?si=824dac842e6a4059" className="hover:text-white transition-colors text-center">SPOTIFY</a>
+                        </div>
+                    </div>
+                </nav>
+
+                {/* Lyric Modal Overlay with Streaming Links */}
+                {selectedSongData && (
+                    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+                    <div className="absolute inset-0 bg-black/80 backdrop-blur-md" onClick={() => setSelectedSongData(null)}></div>
+                    <div className="relative bg-neutral-900 border border-white/10 w-full max-w-4xl max-h-[85vh] overflow-hidden rounded-lg shadow-2xl flex flex-col animate-in fade-in zoom-in duration-200">
+                        
+                        <div className="p-6 md:p-8 border-b border-white/10 bg-neutral-950/50 flex justify-between items-start shrink-0">
+                        <div>
+                            <h3 className="text-3xl md:text-4xl font-bold tracking-tighter text-white mb-2">{selectedSongData.title}</h3>
+                            <div className="flex flex-wrap gap-4 text-xs font-mono text-gray-500 uppercase tracking-widest items-center">
+                                <span>{selectedSongData.album}</span>
+                                <span>•</span>
+                                <span>{selectedSongData.year}</span>
+                                {selectedSongData.mood && <span className="text-red-500 border border-red-900/50 px-2 py-0.5 rounded-full">{selectedSongData.mood}</span>}
+                            </div>
+                        </div>
+                        <button onClick={() => setSelectedSongData(null)} className="text-gray-500 hover:text-white transition-colors p-2 hover:bg-white/10 rounded-full">
+                            <X size={24} />
+                        </button>
+                        </div>
+
+                        <div className="overflow-y-auto p-6 md:p-8 custom-scrollbar">
+                        {selectedSongData.isPending ? (
+                            <div className="flex flex-col items-center justify-center py-20 text-center opacity-50">
+                            <FileText size={48} className="mb-4 text-gray-600" />
+                            <p className="text-xl font-medium text-gray-400">{selectedSongData.translation}</p>
+                            </div>
+                        ) : (
+                            <div className="grid md:grid-cols-2 gap-12">
+                            <div>
+                                <span className="block text-xs font-bold text-gray-600 mb-6 tracking-widest uppercase border-b border-white/5 pb-2">Original Lyrics</span>
+                                <p className="text-gray-300 whitespace-pre-line text-lg leading-relaxed font-medium font-serif opacity-90">
+                                {selectedSongData.original}
+                                </p>
+                            </div>
+                            <div>
+                                <span className="block text-xs font-bold text-red-600 mb-6 tracking-widest uppercase border-b border-red-900/20 pb-2">Thai Interpretation</span>
+                                <p className="text-white whitespace-pre-line text-lg leading-relaxed font-medium font-serif">
+                                {selectedSongData.translation}
+                                </p>
+                            </div>
+                            </div>
+                        )}
+                        </div>
+
+                        <div className="p-6 border-t border-white/5 bg-neutral-950/30 flex justify-between items-center shrink-0">
+                             <div className="flex gap-4">
+                                <a href={`https://open.spotify.com/search/${selectedSongData.title} Joji`} target="_blank" className="flex items-center gap-2 text-sm text-gray-400 hover:text-green-500 transition-colors">
+                                    <Headphones size={18} /> <span className="hidden sm:inline">Listen on Spotify</span>
+                                </a>
+                                <a href={`https://www.youtube.com/results?search_query=Joji ${selectedSongData.title}`} target="_blank" className="flex items-center gap-2 text-sm text-gray-400 hover:text-red-500 transition-colors">
+                                    <Youtube size={18} /> <span className="hidden sm:inline">Watch on YouTube</span>
+                                </a>
+                             </div>
+                             {!selectedSongData.isPending && <p className="text-xs text-gray-600 font-mono hidden sm:block">TRANSLATED BY NECTAR TEAM</p>}
+                        </div>
+                    </div>
+                    </div>
+                )}
+
+                {/* VIEW: HOME */}
+                {currentView === 'home' && (
+                    <>
+                    {/* Hero Section */}
+                    <section className="relative min-h-[90vh] flex items-center justify-center pt-20 pb-12 px-6 overflow-hidden">
+                        <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_50%,_rgba(220,38,38,0.15),transparent_70%)]"></div>
+                        <div className="absolute top-0 right-0 w-1/2 h-full border-l border-white/5 hidden md:block"></div>
+
+                        <div className="max-w-7xl mx-auto w-full grid md:grid-cols-2 gap-12 items-center relative z-10">
+                        {/* Text Content */}
+                        <div className="space-y-8 text-center md:text-left">
+                            <div className="inline-block px-3 py-1 border border-red-900/50 rounded-full bg-red-900/10 backdrop-blur-md animate-in fade-in slide-in-from-bottom-4 duration-700">
+                            <span className="text-red-500 text-xs font-mono tracking-widest uppercase">The Unofficial Guide</span>
+                            </div>
+                            <h1 className="text-5xl md:text-8xl font-bold tracking-tighter leading-tight animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-100">
+                            DISCOVER <br/>
+                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-red-900">YOUR VIBE.</span>
+                            </h1>
+                            <p className="text-gray-400 text-lg md:text-xl max-w-md mx-auto md:mx-0 leading-relaxed animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-200">
+                            ค้นพบเพลง Joji ที่ตรงกับความรู้สึกของคุณที่สุด <br/>
+                            พร้อมคำแปลไทยและความหมายที่จะทำให้คุณอินยิ่งกว่าเดิม
+                            </p>
+                            
+                            {/* Random Lyric Generator */}
+                            <div className="mt-8 p-6 border border-white/10 bg-white/5 rounded-sm backdrop-blur-sm relative group animate-in fade-in slide-in-from-bottom-10 duration-1000 delay-300">
+                                <button 
+                                    onClick={generateRandomLyric}
+                                    className="absolute top-4 right-4 text-gray-500 hover:text-red-500 transition-colors"
+                                    title="Recommend a Song"
+                                >
+                                    <Shuffle size={18} />
+                                </button>
+                                {randomLyric ? (
+                                    <div className="fade-in">
+                                        <p className="text-xl font-serif italic text-white mb-2">"{randomLyric.text}"</p>
+                                        <p className="text-xs text-red-500 font-mono uppercase tracking-widest">— {randomLyric.song}</p>
+                                    </div>
+                                ) : (
+                                    <div onClick={generateRandomLyric} className="cursor-pointer">
+                                        <p className="text-gray-500 italic">Click shuffle to find a song for your mood...</p>
+                                    </div>
+                                )}
+                            </div>
+
+                            <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start pt-4 animate-in fade-in slide-in-from-bottom-10 duration-1000 delay-300">
+                            <button onClick={() => setCurrentView('discography')} className="px-8 py-4 bg-red-700 hover:bg-red-600 text-white font-bold rounded-sm transition-all flex items-center justify-center gap-2 group">
+                                START LISTENING <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform"/>
+                            </button>
+                            <button onClick={() => {
+                                    const el = document.getElementById('tracks');
+                                    el?.scrollIntoView({behavior: 'smooth'});
+                            }} className="px-8 py-4 bg-transparent border border-white/10 text-white font-bold rounded-sm hover:bg-white/5 transition-colors">
+                                RECOMMENDED
+                            </button>
+                            </div>
+                        </div>
+
+                        {/* Visual Feature: Now with Album Art */}
+                        <div className="relative group perspective-1000 hidden md:block animate-in fade-in zoom-in duration-1000 delay-500">
+                            <div className="relative bg-neutral-900 border border-white/10 p-8 rounded-sm transform transition-transform duration-500 hover:rotate-y-6 hover:rotate-x-6 shadow-2xl">
+                                <div className="aspect-square bg-neutral-800 mb-6 relative overflow-hidden group-hover:shadow-[0_0_40px_rgba(220,38,38,0.2)] transition-shadow">
+                                    <img 
+                                        src="https://m.media-amazon.com/images/I/71YM3UGDKJL._UF1000,1000_QL80_.jpg" 
+                                        alt="Smithereens Album"
+                                        className="w-full h-full object-cover opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700"
+                                    />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-neutral-900/80 to-transparent"></div>
+                                    <div className="absolute bottom-4 left-4">
+                                        <span className="text-xs font-bold bg-white text-black px-2 py-1">FEATURED</span>
+                                    </div>
+                                </div>
+                                <h3 className="text-3xl font-bold mb-2">GLIMPSE OF US</h3>
+                                <p className="text-gray-500 font-mono text-xs uppercase tracking-widest mb-6">Smithereens (2022)</p>
+                                <div className="space-y-2 border-l-2 border-red-600 pl-4">
+                                    <p className="text-gray-400 text-sm italic">"Cause sometimes I look in her eyes..."</p>
+                                    <p className="text-white text-sm">"เพราะบางครั้ง ยามฉันมองลึกลงไปในตาคู่นั้นของเธอ..."</p>
+                                </div>
+                                <button 
+                                    onClick={() => openSongModal("GLIMPSE OF US", "SMITHEREENS", "2022")}
+                                    className="absolute bottom-8 right-8 w-12 h-12 bg-white rounded-full flex items-center justify-center text-black hover:scale-110 transition-transform shadow-lg z-10"
+                                >
+                                    <Play size={20} fill="currentColor" />
+                                </button>
+                            </div>
+                        </div>
+                        </div>
+                    </section>
+
+                    {/* About Section - Updated to Discovery focus */}
+                    <section id="about" className="py-20 border-t border-white/5 bg-neutral-950">
+                        <div className="max-w-7xl mx-auto px-6">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                            <div className="bg-white/5 p-8 rounded-sm hover:bg-white/10 transition-colors">
+                            <Music className="text-red-600 w-8 h-8 mb-4" />
+                            <h3 className="text-xl font-bold mb-2">Mood Playlists</h3>
+                            <p className="text-gray-500 text-sm leading-relaxed">เลือกฟังเพลงตามอารมณ์ ไม่ว่าจะเศร้า เหงา หรือโรแมนติก เราคัดมาให้คุณแล้ว</p>
+                            </div>
+                            <div className="bg-white/5 p-8 rounded-sm hover:bg-white/10 transition-colors">
+                            <Globe className="text-red-600 w-8 h-8 mb-4" />
+                            <h3 className="text-xl font-bold mb-2">Deep Meaning</h3>
+                            <p className="text-gray-500 text-sm leading-relaxed">เจาะลึกความหมายและคำแปล ให้คุณเข้าใจทุกตัวอักษรและอินไปกับบทเพลง</p>
+                            </div>
+                            <div className="bg-white/5 p-8 rounded-sm hover:bg-white/10 transition-colors">
+                            <Sparkles className="text-red-600 w-8 h-8 mb-4" />
+                            <h3 className="text-xl font-bold mb-2">Hidden Gems</h3>
+                            <p className="text-gray-500 text-sm leading-relaxed">ค้นพบเพลง B-Side และเพลงหาฟังยากจากทุกอัลบั้มที่คุณอาจไม่เคยได้ยิน</p>
+                            </div>
+                        </div>
+                        </div>
+                    </section>
+
+                    {/* Tracks Archive with Search & Filter */}
+                    <section id="tracks" className="py-32 bg-neutral-950 border-t border-white/5">
+                        <div className="max-w-5xl mx-auto px-6">
+                            <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
+                                <div>
+                                    <h2 className="text-4xl font-bold tracking-tighter mb-2">Essential Joji</h2>
+                                    <span className="text-red-600 font-bold text-sm tracking-widest uppercase">Curated For You</span>
+                                </div>
+                                
+                                {/* Search Bar */}
+                                <div className="relative w-full md:w-64">
+                                    <input 
+                                        type="text" 
+                                        placeholder="Search title or lyrics..."
+                                        value={searchQuery}
+                                        onChange={(e) => setSearchQuery(e.target.value)}
+                                        className="w-full bg-white/5 border border-white/10 rounded-full py-2 pl-10 pr-4 text-sm focus:outline-none focus:border-red-600 transition-colors"
+                                    />
+                                    <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
+                                </div>
+                            </div>
+
+                            {/* Mood Filters */}
+                            <div className="flex flex-wrap gap-2 mb-12">
+                                {moods.map(mood => (
+                                    <button 
+                                        key={mood}
+                                        onClick={() => setActiveMood(mood)}
+                                        className={`px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider border transition-all ${
+                                            activeMood === mood 
+                                            ? 'bg-red-900 border-red-600 text-white' 
+                                            : 'bg-transparent border-white/10 text-gray-500 hover:border-white/30 hover:text-white'
+                                        }`}
+                                    >
+                                        {mood}
+                                    </button>
+                                ))}
+                            </div>
+
+                            <div className="border-t border-white/10">
+                                {filteredTracks.length > 0 ? (
+                                    filteredTracks.slice(0, 7).map((track) => (
+                                    <div key={track.id} className="border-b border-white/10 group">
+                                        <div 
+                                        onClick={() => toggleTrack(track.id)}
+                                        className="py-6 cursor-pointer flex items-center justify-between hover:pl-4 transition-all duration-300"
+                                        >
+                                        <div className="flex items-center gap-6">
+                                            <span className="text-sm font-mono text-gray-600 w-6">0{track.id}</span>
+                                            <div>
+                                                <h3 className={`text-xl md:text-2xl font-bold tracking-tight transition-colors ${expandedTrack === track.id ? 'text-red-600' : 'text-white'}`}>
+                                                {track.title}
+                                                </h3>
+                                                <div className="flex gap-2 mt-1">
+                                                    <span className="text-[10px] text-gray-500 uppercase tracking-widest">{track.album}</span>
+                                                    {track.mood && <span className="text-[10px] text-red-900 border border-red-900/30 px-1.5 rounded bg-red-900/10 uppercase tracking-widest">{track.mood}</span>}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <ChevronDown 
+                                            className={`text-gray-600 transition-transform duration-300 ${expandedTrack === track.id ? 'rotate-180 text-red-600' : ''}`} 
+                                            size={20} 
+                                        />
+                                        </div>
+
+                                        <div className={`overflow-hidden transition-all duration-500 ease-in-out ${expandedTrack === track.id ? 'max-h-[600px] opacity-100 mb-8' : 'max-h-0 opacity-0'}`}>
+                                        <div className="grid md:grid-cols-2 gap-8 pt-4 pl-4 md:pl-10">
+                                            <div>
+                                            <span className="block text-xs font-bold text-gray-600 mb-2 tracking-widest uppercase">Original</span>
+                                            <p className="text-gray-400 whitespace-pre-line text-sm leading-relaxed font-medium">
+                                                {track.original}
+                                            </p>
+                                            </div>
+                                            <div>
+                                            <span className="block text-xs font-bold text-red-600 mb-2 tracking-widest uppercase">Thai Interpretation</span>
+                                            <p className="text-white whitespace-pre-line text-sm leading-relaxed font-medium">
+                                                {track.translation}
+                                            </p>
+                                            </div>
+                                            <div className="md:col-span-2 pt-4 border-t border-white/5 flex gap-4">
+                                                 <button onClick={(e) => { e.stopPropagation(); openSongModal(track.title, track.album, track.year); }} className="text-xs font-bold text-gray-500 hover:text-white flex items-center gap-1 transition-colors">
+                                                    <ExternalLink size={12} /> OPEN FULL VIEW
+                                                 </button>
+                                            </div>
+                                        </div>
+                                        </div>
+                                    </div>
+                                    ))
+                                ) : (
+                                    <div className="py-20 text-center text-gray-500">
+                                        <p>No tracks found matching "{searchQuery}" with mood "{activeMood}"</p>
+                                        <button onClick={() => {setSearchQuery(""); setActiveMood("All");}} className="mt-4 text-red-500 hover:underline">Clear Filters</button>
+                                    </div>
+                                )}
+                            </div>
+                            
+                            <div className="mt-16 text-center">
+                                <button 
+                                onClick={() => setCurrentView('discography')}
+                                className="inline-flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-white transition-colors"
+                                >
+                                VIEW FULL DISCOGRAPHY <ArrowRight size={16} />
+                                </button>
+                            </div>
+                        </div>
+                    </section>
+                    </>
+                )}
+
+                {/* VIEW: DISCOGRAPHY */}
+                {currentView === 'discography' && (
+                    <section className="pt-32 pb-20 min-h-screen bg-neutral-950">
+                    <div className="max-w-7xl mx-auto px-6">
+                        <div className="mb-12">
+                        <button 
+                            onClick={() => setCurrentView('home')}
+                            className="flex items-center gap-2 text-gray-500 hover:text-white transition-colors mb-8 text-sm font-bold tracking-widest uppercase"
+                        >
+                            <ArrowLeft size={16} /> Back to Home
+                        </button>
+                        <h2 className="text-5xl md:text-7xl font-bold tracking-tighter mb-4">FULL<br/><span className="text-red-600">DISCOGRAPHY</span></h2>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-12">
+                        {fullDiscography.map((album, index) => (
+                            <div key={index} className="group">
+                            {/* Album Cover Placeholder */}
+                            <div className={`aspect-square relative mb-6 flex items-end p-0 transition-transform duration-500 group-hover:-translate-y-2 overflow-hidden rounded-sm`}>
+                                <img 
+                                    src={album.coverUrl} 
+                                    alt={album.album} 
+                                    className="absolute inset-0 w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-700 group-hover:scale-105" 
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
+                                
+                                <div className="relative z-10 p-8 w-full">
+                                    <h3 className="text-3xl md:text-4xl font-bold tracking-tight mb-1 text-white">{album.album}</h3>
+                                    <p className="text-white/80 font-mono text-sm">{album.year}</p>
+                                </div>
+                            </div>
+
+                            {/* Tracklist */}
+                            <div className="border-t border-white/10 pt-6">
+                                <ul className="grid grid-cols-1 gap-3">
+                                {album.songs.map((song, i) => (
+                                    <li key={i}>
+                                    <button 
+                                        onClick={() => openSongModal(song, album.album, album.year)}
+                                        className="w-full text-left flex items-center justify-between text-gray-500 hover:text-white transition-colors py-2 px-2 border-b border-transparent hover:bg-white/5 rounded-sm group/song"
+                                    >
+                                        <span className="text-sm font-medium">{i + 1}. {song}</span>
+                                        {tracks.some(t => t.title.toUpperCase() === song.toUpperCase()) ? (
+                                        <span className="text-[10px] text-red-600 font-bold border border-red-900/50 px-2 py-0.5 rounded-full group-hover/song:bg-red-900/20 transition-colors">TH</span>
+                                        ) : (
+                                        <span className="opacity-0 group-hover/song:opacity-100 text-[10px] text-gray-600 transition-opacity">VIEW</span>
+                                        )}
+                                    </button>
+                                    </li>
+                                ))}
+                                </ul>
+                            </div>
+                            </div>
+                        ))}
+                        </div>
+                    </div>
+                    </section>
+                )}
+
+                {/* Contact / Footer (Always visible) */}
+                <section id="community" className="py-32 border-t border-white/5 bg-neutral-950">
+                    <div className="max-w-3xl mx-auto px-6 text-center">
+                    <h2 className="text-3xl font-bold mb-8 tracking-tight">Join the Sad Club</h2>
+                    
+                    <div className="mb-16">
+                        <p className="text-gray-500 mb-8 max-w-lg mx-auto">
+                            Join our community to discuss lyrics, share theories, and find others who feel the same way.
+                        </p>
+                        <a 
+                            href="https://discord.gg/43pEvXVWGv" 
+                            className="inline-flex items-center gap-3 px-8 py-4 bg-[#5865F2] hover:bg-[#4752C4] text-white font-bold rounded-sm transition-all transform hover:scale-105 shadow-lg shadow-blue-900/20"
+                        >
+                            <MessageCircle size={20} />
+                            <span>JOIN DISCORD SERVER</span>
+                        </a>
+                    </div>
+
+                    <div className="flex justify-center gap-8 text-sm font-bold text-gray-500 uppercase tracking-widest">
+                        <a href="https://www.instagram.com/a.lifeofbrooklyn/" className="hover:text-white transition-colors text-center">INSTAGRAM</a>
+                            <a href="https://www.tiktok.com/@sonatargoingtofar?is_from_webapp=1&sender_device=pc" className="hover:text-white transition-colors text-center">TIKTOK</a>
+                            <a href="https://open.spotify.com/user/31exjoqodynad2wo6jiutvh5mg34?si=824dac842e6a4059" className="hover:text-white transition-colors text-center">SPOTIFY</a>
+                    </div>
+                    
+                    <div className="mt-12 text-xs text-gray-800 font-medium">
+                        © 2024 a.lifeofbrooklyn FOR JOJI. All rights reserved.
+                    </div>
+                    </div>
+                </section>
+
+                </div>
+            );
+        };
+
+        const root = createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
